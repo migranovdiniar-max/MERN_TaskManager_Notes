@@ -30,3 +30,46 @@
     width: 90%;
     max-width: 680px;
 }
+
+.buttonContainer {
+    margin-top: 3.5rem;           /* чуть больше воздуха сверху */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4rem;
+    transform: translateY(-2px);
+    color: white;
+    transform: translateX(10px);    /* ← сдвигаем Login вправо */
+}             
+
+.landingbutton {
+    width: 180px;                 /* чуть шире — выглядит солиднее */
+    height: 52px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    border-radius: 50px;          /* более мягкие углы */
+    transition: all 0.25s ease;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+    background-color: white;
+    border: 2px solid #0d6efd;
+    color: #0d6efd;
+}
+
+@media only screen and (min-width: 1200px) {
+    .buttonContainer {
+        padding: 0 200px;              
+    }
+    .landingbutton {
+        width: 0 100px;             
+    }
+}
+
+@media only screen and (max-width: 600px) {
+    .buttonContainer {
+        padding: 60px;              
+    }
+    .landingbutton {
+        width: 150px;
+        height: 45px;     
+    }
+}
