@@ -1,30 +1,38 @@
+// server.js
 const express = require('express');
-const notes = require('./data/notes');
 const dotenv = require('dotenv');
 const connectDB = require('./config/db');
-
 const userRoutes = require('./routes/userRoutes');
+const { notFound, errorHandler } = require('./middlewares/errorMiddleware');
 
+dotenv.config();
 
 const app = express();
-dotenv.config();
-const PORT = process.env.PORT || 5000;
+
+// Подключение к БД
 connectDB();
+
+// Парсинг JSON
 app.use(express.json());
 
+// Главная страница (можно убрать или сделать красивее)
 app.get('/', (req, res) => {
-  res.send('Hello World!');
-})
-
-
-app.get('/api/notes', (req, res) => {
-  res.json(notes);
+  res.json({ message: 'API is running...' });
 });
 
+// Роуты
+app.use('/api/users', userRoutes);
 
-app.use("/api/users", userRoutes);
+// Пока оставляем тестовый маршрут с заметками (потом уберёшь)
+app.get('/api/notes', (req, res) => {
+  res.json(require('./data/notes'));
+});
 
+// Важно! 404 и обработчик ошибок — САМЫЕ ПОСЛЕДНИЕ
+app.use(notFound);
+app.use(errorHandler);
 
+const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
+  console.log(`Server running on port ${PORT}`);
 });
