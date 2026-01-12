@@ -10,7 +10,7 @@ const RegisterScreen = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [pic, setPic] = useState(''); 
+  const [pic, setPic] = useState('https://icon-library.com/images/anonymous-avatar-icon/anonymous-avatar-icon-25.jpg'); 
 
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -20,7 +20,6 @@ const RegisterScreen = () => {
   const submitHandler = async (e) => {
     e.preventDefault();
 
-    // простая проверка совпадения паролей на фронте
     if (password !== confirmPassword) {
       setError('Пароли не совпадают');
       return;

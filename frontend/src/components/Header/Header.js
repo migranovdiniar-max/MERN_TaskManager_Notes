@@ -3,14 +3,16 @@ import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import NavDropdown from 'react-bootstrap/NavDropdown';
 import Form from 'react-bootstrap/Form'; 
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';   // ← заменили useHistory
 
 const Header = () => {
+  const navigate = useNavigate();   // ← теперь useNavigate
+
   return (
     <Navbar expand="lg" className="bg-body-tertiary" bg="primary" variant='dark'>
       <Container>
         <Navbar.Brand>
-            <Link to='/'>Notes</Link>
+          <Link to='/'>Notes</Link>
         </Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
@@ -29,7 +31,14 @@ const Header = () => {
             <NavDropdown title="Dinyar" id="basic-nav-dropdown">
               <NavDropdown.Item href="#action/3.1">My Profile</NavDropdown.Item>
               <NavDropdown.Divider />
-              <NavDropdown.Item href="#action/3.4">LogOut</NavDropdown.Item>
+              <NavDropdown.Item 
+                onClick={() => {
+                  localStorage.removeItem("userInfo");
+                  navigate('/', { replace: true });   // ← правильный выход
+                }}
+              >
+                LogOut
+              </NavDropdown.Item>
             </NavDropdown>
           </Nav>
         </Navbar.Collapse>
