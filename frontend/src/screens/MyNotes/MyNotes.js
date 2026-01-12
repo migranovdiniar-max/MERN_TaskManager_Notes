@@ -1,14 +1,33 @@
 import MainScreen from '../../components/MainScreen';
 import { Link } from 'react-router-dom';
 import { Accordion, Button, Card, Badge } from 'react-bootstrap'; 
-import notes from '../../data/notes';
+import { useEffect, useState } from 'react';
+import axios from 'axios';
 
 const MyNotes = () => {
+  const [notes, setNotes] = useState([]);
+
   const deleteHandler = (id) => {
     if (window.confirm("Are you sure?")) {
       console.log("Delete Note", id);
+      // Здесь можно добавить реальный delete-запрос к API, например:
+      // await axios.delete(`/api/notes/${id}`);
+      // fetchNotes(); // обновить список после удаления
     }
   };
+
+  const fetchNotes = async () => {
+    try {
+      const { data } = await axios.get("/api/notes");
+      setNotes(data);
+    } catch (error) {
+      console.error("Ошибка загрузки заметок:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchNotes();
+  }, []);
 
   return (
     <MainScreen title="Welcome Back">
@@ -19,8 +38,8 @@ const MyNotes = () => {
       </Link>
 
       <Accordion>
-        {notes.map((note, index) => (
-          <Accordion.Item eventKey={String(index)} key={note.id}>
+        {notes.map((note) => (
+          <Accordion.Item eventKey={String(note.id || note._id)} key={note.id || note._id}>
             <Card style={{ margin: '10px 0' }}>
               <Card.Header
                 style={{
@@ -46,14 +65,14 @@ const MyNotes = () => {
                 </Accordion.Button>
 
                 <div>
-                  <Button variant="primary" size="sm" href={`note/${note.id}`}>
+                  <Button variant="primary" size="sm" href={`note/${note.id || note._id}`}>
                     Edit
                   </Button>
                   <Button
                     variant="danger"
                     className="mx-2"
                     size="sm"
-                    onClick={() => deleteHandler(note.id)}
+                    onClick={() => deleteHandler(note.id || note._id)}
                   >
                     Delete
                   </Button>
@@ -69,7 +88,7 @@ const MyNotes = () => {
                 <blockquote className="blockquote mb-0">
                   <p>{note.content}</p>
                   <footer className="blockquote-footer">
-                    <cite>Created on - {note.createdAt || '2025-04-05'}</cite>
+                    <cite>Created on - {note.createdAt ? new Date(note.createdAt).toLocaleDateString() : 'Unknown'}</cite>
                   </footer>
                 </blockquote>
               </Accordion.Body>
