@@ -3,12 +3,15 @@ import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import NavDropdown from 'react-bootstrap/NavDropdown';
 import Form from 'react-bootstrap/Form'; 
+import { Link } from 'react-router-dom';
 
 const Header = () => {
   return (
     <Navbar expand="lg" className="bg-body-tertiary" bg="primary" variant='dark'>
       <Container>
-        <Navbar.Brand href="/">Notes</Navbar.Brand>
+        <Navbar.Brand>
+            <Link to='/'>Notes</Link>
+        </Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="m-auto">
@@ -22,7 +25,7 @@ const Header = () => {
             </Form>
           </Nav>
           <Nav className="me-auto">
-            <Nav.Link href="#home">My Notes</Nav.Link>
+            <Nav.Link href="/mynotes">My Notes</Nav.Link>
             <NavDropdown title="Dinyar" id="basic-nav-dropdown">
               <NavDropdown.Item href="#action/3.1">My Profile</NavDropdown.Item>
               <NavDropdown.Divider />
