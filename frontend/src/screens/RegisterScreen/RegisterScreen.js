@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Form, Button, Alert, Spinner } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import { useDispatch, useSelector } from 'react-redux';
+import { register } from '../../actions/userActions'; // ← подставь правильный путь
 import MainScreen from '../../components/MainScreen';
 import './RegisterScreen.css';
 
@@ -10,43 +11,38 @@ const RegisterScreen = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [pic, setPic] = useState('https://icon-library.com/images/anonymous-avatar-icon/anonymous-avatar-icon-25.jpg'); 
+  const [pic, setPic] = useState(
+    'https://icon-library.com/images/anonymous-avatar-icon/anonymous-avatar-icon-25.jpg'
+  );
 
-  const [error, setError] = useState('');
-  const [loading, setLoading] = useState(false);
-
+  const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const submitHandler = async (e) => {
+  // Получаем состояние регистрации и логина из Redux
+  const userRegister = useSelector((state) => state.userRegister);
+  const { loading, error } = userRegister;
+
+  const userLogin = useSelector((state) => state.userLogin);
+  const { userInfo } = userLogin;
+
+  // Если пользователь уже авторизован (в т.ч. после успешной регистрации) — редирект
+  useEffect(() => {
+    if (userInfo) {
+      navigate('/mynotes');
+    }
+  }, [navigate, userInfo]);
+
+  const submitHandler = (e) => {
     e.preventDefault();
 
     if (password !== confirmPassword) {
-      setError('Пароли не совпадают');
+      // Можно оставить локальную проверку, это нормально
+      alert('Пароли не совпадают'); // или использовать setError
       return;
     }
 
-    setError('');
-    setLoading(true);
-
-    try {
-      const { data } = await axios.post('/api/users', {
-        name,
-        email,
-        password,
-        pic: pic || undefined, 
-      });
-
-      localStorage.setItem('userInfo', JSON.stringify(data));
-      navigate('/mynotes');
-
-    } catch (err) {
-      setError(
-        err.response?.data?.message ||
-          'Ошибка при регистрации. Попробуйте позже.'
-      );
-    } finally {
-      setLoading(false);
-    }
+    // Отправляем регистрацию через Redux action
+    dispatch(register(name, email, password, pic));
   };
 
   return (
