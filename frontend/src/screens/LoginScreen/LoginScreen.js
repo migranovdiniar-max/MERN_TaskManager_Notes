@@ -1,41 +1,33 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Form, Button, Alert, Spinner } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import { useDispatch, useSelector } from 'react-redux';
+import { login } from '../../actions/userActions'; // ← путь к твоему файлу с экшенами
 import MainScreen from '../../components/MainScreen';
 import './LoginScreen.css';
+
 
 const LoginScreen = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
-  const [loading, setLoading] = useState(false);
 
+  const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  // Берём состояние из Redux
+  const userLogin = useSelector((state) => state.userLogin);
+  const { loading, error, userInfo } = userLogin;
+
+  // Если пользователь уже авторизован — сразу перекидываем на /mynotes
+  useEffect(() => {
+    if (userInfo) {
+      navigate('/mynotes');
+    }
+  }, [navigate, userInfo]);
 
   const submitHandler = async (e) => {
     e.preventDefault();
-
-    setError('');          
-    setLoading(true);
-
-    try {
-      const { data } = await axios.post('/api/users/login', {
-        email,
-        password,
-      });
-
-      localStorage.setItem('userInfo', JSON.stringify(data));
-
-      navigate('/mynotes');
-
-    } catch (err) {
-      setError(
-        err.response?.data?.message || 'Ошибка входа. Попробуйте позже.'
-      );
-    } finally {
-      setLoading(false);
-    }
+    dispatch(login(email, password)); // ← вызываем экшен из Redux
   };
 
   return (
@@ -88,7 +80,7 @@ const LoginScreen = () => {
               Вход...
             </>
           ) : (
-            'Sign up'
+            'Sign in'   // ← было "Sign up" — скорее всего опечатка
           )}
         </Button>
       </Form>
