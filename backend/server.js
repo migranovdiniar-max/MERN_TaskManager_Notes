@@ -2,7 +2,10 @@
 const express = require('express');
 const dotenv = require('dotenv');
 const connectDB = require('./config/db');
+
 const userRoutes = require('./routes/userRoutes');
+const noteRoutes = require('./routes/noteRoutes');
+
 const { notFound, errorHandler } = require('./middlewares/errorMiddleware');
 
 dotenv.config();
@@ -22,6 +25,7 @@ app.get('/', (req, res) => {
 
 // Роуты
 app.use('/api/users', userRoutes);
+app.use("/api/notes", noteRoutes);
 
 // Пока оставляем тестовый маршрут с заметками (потом уберёшь)
 app.get('/api/notes', (req, res) => {
